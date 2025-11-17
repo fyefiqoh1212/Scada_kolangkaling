@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCADA Demo Kolang Kaling</title>
+
+    <style>
+        body {
+            background: rgb(43, 110, 112);
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            /* justify-content: center; */
+        }
+
+        .card {
+            width: 300px;
+            /* background: #f8f6f6; */
+            padding: 20px;
+            border-radius: 15px;
+            /* box-shadow: 0 0 12px rgba(0,0,0,0.5); */
+            text-align: center;
+        }
+
+        .container-img {
+            .btn { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        .btn-on { background: #28a745; color: white; }
+        .btn-off { background: #dc3545; color: white; }
+        }
+
+     /* AREA UTAMA GAMBAR */
+/* AREA UTAMA GAMBAR */
+.image1 {
+    position: relative;
+    width: 280px;     /* sesuaikan dengan ukuran tanki kamu */
+    height: 450px;    /* area total */
+    margin: auto;
+}
+
+/* TANKI (paling atas) */
+.mesin-img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 75%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* PIPA (di bawah tanki, di tengah) */
+.pipe-img {
+    position: absolute;
+    top: 205px;      /* geser PIPA turun dikit */
+    left: 45%;
+    width: 80px;     /* perbesar PIPA */
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+/* PUMP CONTAINER (di paling bawah, berada di tengah pipa) */
+.pump-container {
+    position: absolute;
+    top: 305px;       /* geser pompa NAIK/TURUN */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;     /* sedikit lebih besar supaya proporsional */
+    height: 130px;
+    z-index: 3;
+}
+
+/* HOUSING (pump2.png) */
+.pump1-img {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+/* KIPAS DALAM HOUSING */
+.pump2-img {
+    position: absolute;
+    width: 38%;              /* sesuaikan ukuran kipas */
+    top: 32%;                /* geser sedikit ke bawah */
+    left: 38%;               /* center horizontal */
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    pointer-events: none;
+}
+
+
+/* ANIMASI KIPAS */
+.spin {
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* AREA PROSES 2 */
+/* container */
+.image2 {
+  position: relative;
+  width: 280px;    /* ubah sesuai layout */
+  height: 360px;
+  margin: 0 auto;
+}
+
+/* background tanki luar */
+.mesin2-img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 280px;
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* wrapper untuk shaft + rotor (di atas mesin2-img) */
+.tanki-wrap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 280px;
+  transform: translateX(-50%);
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* batang (static) */
+.shaft {
+  position: absolute;
+  top: 40px;         /* sesuaikan */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;       /* ketebalan batang */
+  height: 240px;     /* panjang batang */
+  z-index: 3;
+}
+
+/* rotor (yang berputar) */
+.rotator {
+  position: absolute;
+  top: 20px;         /* sesuaikan agar kotak menempel pada shaft */
+  left: 20px;        /* geser horizontal agar kotak menempel; sesuaikan */
+  width: 200px;      /* sesuaikan ukuran rotator (dua kotak) */
+  transform-origin: 70px 120px; /* pivot mendekati poros; sesuaikan jika perlu */
+  transition: transform 0.9s ease-in-out;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* tiga posisi rotator */
+.rotator.pos1 { transform: rotate(-90deg); }  /* awal: miring kiri */
+.rotator.pos2 { transform: rotate(0deg); }    /* tengah: lurus */
+.rotator.pos3 { transform: rotate(90deg); }   /* akhir: mirror kanan */
+
+
+.image3 {
+    position: relative;
+    width: 350px;          /* sesuaikan ukuran tangki  */
+    height: 550px;         /* area untuk head + foot   */
+    margin: auto;
+}
+
+/* BAGIAN ATAS (HEAD TANK) */
+.head-img {
+    position: absolute;
+    top: 0;                /* berada paling atas */
+    left: 50%;
+    width: 100%;           /* ambil lebar penuh container */
+    transform: translateX(-50%);
+    z-index: 1; 
+     transition: transform 1.5s ease;
+    transform-origin: 30% 70%;   /* titik putar di bagian bawah */
+    
+}
+
+.rotate-head {
+    transform: rotate(-100deg);
+}
+/* BAGIAN BAWAH (FOOT + FRAME + GAS) */
+.foot-img {
+    position: absolute;
+    top: 150px;            /* JARAK PRESISI agar nempel ke tankio.png */
+    left: 45%;
+    width: 100%;
+    transform: translateX(-50%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+
+
+
+
+        .indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin: 10px auto;
+            background: red;
+            box-shadow: 0 0 10px rgba(255,0,0,0.7);
+        }
+
+        .status {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-on {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-off {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SCADA Demo – Pabrik Kolang Kaling</h1>
+
+    <div class="container">
+
+        <!-- PROSES 1 -->
+        <div class="card">
+            <h2>Proses 1</h2>
+            <div id="indicator1" class="indicator"></div>
+            <div id="status1" class="status">Pompa Mati</div>
+            <div class="image1">
+                 <img id="mesin1" src="tanki1.png" class="mesin-img">
+                <img id="pipe" src="pipe.png" class="pipe-img">
+               <div class="pump-container">
+                    <img src="pump2.png" class="pump1-img">
+                   <img id="pump2" src="innerpump.png" class="pump2-img">
+                </div>
+
+                 
+            </div>
+            
+            <button class="btn btn-on" onclick="turnOn(1)">ON</button>
+            <button class="btn btn-off" onclick="turnOff(1)">OFF</button>
+        </div>
+
+        <!-- PROSES 2 -->
+       <div class="card">
+  <h2>Proses 2</h2>
+  <div id="indicator2" class="indicator"></div>
+  <div id="status2" class="status">Pompa Mati</div>
+
+  <div class="image2">
+    <!-- Tampilan luar tanki (background) -->
+    <img id="mesin2" src="tanki2.png" class="mesin2-img" alt="tanki">
+
+    <!-- Area untuk shaft (batang) + rotor (dua kotak) -->
+    <div class="tanki-wrap">
+      <!-- shaft: gambar batang yang TETAP -->
+      <img src="shaft.png" class="shaft" alt="shaft">
+
+      <!-- rotor: hanya ini yg akan di-rotate -->
+      <img src="rotater.png" id="rotator" class="rotator" alt="rotator">
+    </div>
+  </div>
+
+  <button class="btn btn-on" onclick="turnOn(2)">ON</button>
+  <button class="btn btn-off" onclick="turnOff(2)">OFF</button>
+</div>
+
+
+        <!-- PROSES 3 -->
+        <div class="card">
+            <h2>Proses 3</h2>
+            <div id="indicator3" class="indicator"></div>
+            <div class="image3">
+                <img id="foot" src="foottank.PNG" class="foot-img">
+                 <img id="head" src="tankio.PNG" class="head-img">
+                
+            </div>
+            <div id="status3" class="status">Pompa Mati</div>
+            <button class="btn btn-on" onclick="turnOn(3)">ON</button>
+            <button class="btn btn-off" onclick="turnOff(3)">OFF</button>
+        </div>
+
+    </div>
+
+<script>
+ function turnOn(id) {
+    // indikator
+    document.getElementById("indicator" + id).style.background = "lime";
+    document.getElementById("indicator" + id).style.boxShadow = "0 0 10px lime";
+    document.getElementById("status" + id).innerHTML = "Pompa Menyala";
+
+    // PROSES 1
+    if (id === 1) {
+        document.getElementById("mesin1").style.filter =
+            "brightness(1.3) saturate(2) hue-rotate(190deg)";
+
+        document.getElementById("pump2").classList.add("spin");
+
+        document.getElementById("pipe").src = "pipeblue.png";
+    }
+
+    // PROSES 2
+    if (id === 2) {
+        const r = document.getElementById("rotator");
+    // urutan animasi: pos1 -> pos2 -> pos3 -> (stop di pos3)
+    r.className = "rotator pos1";
+    setTimeout(() => r.className = "rotator pos2", 900);
+    setTimeout(() => r.className = "rotator pos3", 1800);
+    }
+
+    // PROSES 3
+    if (id === 3) {
+        document.getElementById("head").classList.add("rotate-head");
+    }
+}
+
+function turnOff(id) {
+    document.getElementById("indicator" + id).style.background = "red";
+    document.getElementById("indicator" + id).style.boxShadow = "0 0 10px red";
+    document.getElementById("status" + id).innerHTML = "Pompa Mati";
+
+    // PROSES 1
+    if (id === 1) {
+        document.getElementById("mesin1").style.filter = "none";
+        document.getElementById("pump2").classList.remove("spin");
+        document.getElementById("pipe").src = "pipe.png";
+    }
+
+    // PROSES 2
+    if (id === 2) {
+        const r = document.getElementById("rotator");
+    // kembali ke posisi awal
+    r.className = "rotator pos1";
+    }
+
+    // PROSES 3
+    if (id === 3) {
+        document.getElementById("head").classList.remove("rotate-head");
+    }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCADA Demo Kolang Kaling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: rgb(43, 110, 112);
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            /* justify-content: center; */
+        }
+
+        .card {
+            width: 300px;
+            /* background: #f8f6f6; */
+            padding: 20px;
+            border-radius: 15px;
+            /* box-shadow: 0 0 12px rgba(0,0,0,0.5); */
+            text-align: center;
+        }
+
+        .container-img {
+            .btn { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        .btn-on { background: #28a745; color: white; }
+        .btn-off { background: #dc3545; color: white; }
+        }
+
+     /* AREA UTAMA GAMBAR */
+/* AREA UTAMA GAMBAR */
+.image1 {
+    position: relative;
+    width: 280px;     /* sesuaikan dengan ukuran tanki kamu */
+    height: 450px;    /* area total */
+    margin: auto;
+}
+
+/* TANKI (paling atas) */
+.mesin-img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 75%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* PIPA (di bawah tanki, di tengah) */
+.pipe-img {
+    position: absolute;
+    top: 205px;      /* geser PIPA turun dikit */
+    left: 45%;
+    width: 80px;     /* perbesar PIPA */
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+/* PUMP CONTAINER (di paling bawah, berada di tengah pipa) */
+.pump-container {
+    position: absolute;
+    top: 305px;       /* geser pompa NAIK/TURUN */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;     /* sedikit lebih besar supaya proporsional */
+    height: 130px;
+    z-index: 3;
+}
+
+/* HOUSING (pump2.png) */
+.pump1-img {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+/* KIPAS DALAM HOUSING */
+.pump2-img {
+    position: absolute;
+    width: 38%;              /* sesuaikan ukuran kipas */
+    top: 32%;                /* geser sedikit ke bawah */
+    left: 38%;               /* center horizontal */
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    pointer-events: none;
+}
+
+
+/* ANIMASI KIPAS */
+.spin {
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* AREA PROSES 2 */
+.image2 {
+    position: relative;
+    width: 260px;      /* sesuaikan dengan ukuran tanki */
+    height: 360px;     /* tinggi tampilan tanki */
+    margin: auto;
+}
+
+/* Tanki */
+.mesin2-img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 120%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* ROTATOR (gambar di dalam tanki) */
+.rotater-img {
+    position: absolute;
+
+    /* POSISI di dalam tanki */
+    top: 57px;         /* geser naik/turun */
+    left: 32%;         /* center horizontal */
+    transform: translateX(-50%);
+
+    width: 100px;      /* SESUAIKAN ukuran rotator */
+    z-index: 2;        /* harus di atas tanki */
+}
+
+.rotater-small {
+    width: 30% !important;
+    max-width: 30% !important;
+    height: auto !important;
+    top: 15%;         /* geser naik/turun */
+    left: 45%;         /* center horizontal */
+    transform: translateX(-50%);
+     z-index: 2; 
+}
+
+
+.image3 {
+    position: relative;
+    width: 350px;          /* sesuaikan ukuran tangki  */
+    height: 550px;         /* area untuk head + foot   */
+    margin: auto;
+}
+
+/* BAGIAN ATAS (HEAD TANK) */
+.head-img {
+    position: absolute;
+    top: 0;                /* berada paling atas */
+    left: 50%;
+    width: 100%;           /* ambil lebar penuh container */
+    transform: translateX(-50%);
+    z-index: 1; 
+     transition: transform 1.5s ease;
+    transform-origin: 30% 70%;   /* titik putar di bagian bawah */
+    
+}
+
+.rotate-head {
+    transform: rotate(-100deg);
+}
+/* BAGIAN BAWAH (FOOT + FRAME + GAS) */
+.foot-img {
+    position: absolute;
+    top: 150px;            /* JARAK PRESISI agar nempel ke tankio.png */
+    left: 45%;
+    width: 100%;
+    transform: translateX(-50%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+
+
+
+
+        .indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin: 10px auto;
+            background: red;
+            box-shadow: 0 0 10px rgba(255,0,0,0.7);
+        }
+
+        .status {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-on {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-off {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.statusproses {
+     font-family: "Orbitron", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 70px;
+  font-style: normal;
+}
+
+.statusproses h2{
+    padding-left: 200px;
+}
+
+
+
+    </style>
+</head>
+<body>
+
+    <h1>SCADA Demo – Pabrik Kolang Kaling</h1>
+
+    <div class="container">
+
+        <!-- PROSES 1 -->
+        <div class="card">
+            <h2>Proses 1</h2>
+            <div id="indicator1" class="indicator"></div>
+            <div id="status1" class="status">Pompa Mati</div>
+            <div class="image1">
+                 <img id="mesin1" src="tanki1.PNG" class="mesin-img">
+                <img id="pipe" src="pipe.png" class="pipe-img">
+               <div class="pump-container">
+                    <img src="pump2.png" class="pump1-img">
+                   <img id="pump2" src="innerpump.png" class="pump2-img">
+                </div>
+
+                 
+            </div>
+            
+            <button id="btnOn1" class="btn btn-on" onclick="turnOn(1)">ON</button>
+            <button id="btnOff1" class="btn btn-off" onclick="turnOff(1)">OFF</button>
+        </div>
+
+        <!-- PROSES 2 -->
+        <div class="card">
+            <h2>Proses 2</h2>
+            <div id="indicator2" class="indicator"></div>
+            <div id="status2" class="status"></div>
+            <div class="image2">
+                <img id="mesin2" src="tanki2.png" class="mesin2-img">
+                <img id="rotator" src="rotator1.png" class="rotater-img">
+            </div>
+
+
+
+            <button id="btnOn2" class="btn btn-on" onclick="turnOn(2)">ON</button>
+            <button id="btnOff2" class="btn btn-off" onclick="turnOff(2)">OFF</button>
+        </div>
+
+        <!-- PROSES 3 -->
+        <div class="card">
+            <h2>Proses 3</h2>
+            <div id="indicator3" class="indicator"></div>
+            <div class="image3">
+                <img id="foot" src="foottank.PNG" class="foot-img">
+                 <img id="head" src="tankio.PNG" class="head-img">
+                
+            </div>
+            <!-- <div id="status3" class="status">Pompa Mati</div> -->
+            <button id="btnOn3" class="btn btn-on" onclick="turnOn(3)">ON</button>
+            <button id="btnOff3" class="btn btn-off" onclick="turnOff(3)">OFF</button>
+        </div>
+
+       <div class="statusproses">
+        <h1>Status</h1>
+        <div class="proses">
+            <h2 id="st">Proses</h2>
+        </div>
+        <br><br>
+        <h2>Temperature 1 = 70° </h2>
+         <h2>Temperature 2 = 70° </h2>
+          <h2>Temperature 3 = 70° </h2>
+       </div> 
+
+    </div>
+
+<script>
+    let rotatorLoop = null;
+ function turnOn(id) {
+
+    if (id===1){
+        document.getElementById("btnOn2").disabled = true;
+        document.getElementById("btnOff2").disabled = true;
+        document.getElementById("btnOn3").disabled = true;
+        document.getElementById("btnOff3").disabled = true;
+    }
+    else if(id===2) {
+        document.getElementById("btnOn1").disabled = true;
+        document.getElementById("btnOff1").disabled = true;
+        document.getElementById("btnOn3").disabled = true;
+        document.getElementById("btnOff3").disabled = true;
+    }
+
+    else if(id===3) {
+        document.getElementById("btnOn1").disabled = true;
+        document.getElementById("btnOff1").disabled = true;
+        document.getElementById("btnOn2").disabled = true;
+        document.getElementById("btnOff2").disabled = true;
+    }
+    // indikator
+    document.getElementById("indicator" + id).style.background = "lime";
+    document.getElementById("indicator" + id).style.boxShadow = "0 0 10px lime";
+   
+
+    // PROSES 1
+    if (id === 1) {
+        document.getElementById("mesin1").style.filter =
+            "brightness(1.3) saturate(2) hue-rotate(190deg)";
+
+        document.getElementById("pump2").classList.add("spin");
+
+        document.getElementById("pipe").src = "pipeblue.png";
+         document.getElementById("status" + id).innerHTML = "Pompa manyala";
+         document.getElementById("st").innerHTML = "Proses 1";
+    }
+
+    // PROSES 2
+    if (id === 2) {
+         document.getElementById("st").innerHTML = "Proses 2";
+         if (rotatorLoop) return;
+
+        const r = document.getElementById("rotator");
+
+        // Set interval untuk mengganti gambar terus menerus
+        rotatorLoop = setInterval(() => {
+            r.src = (r.src.includes("rotator1.png")) 
+                    ? "rotator3.png" 
+                    : "rotator1.png";
+        }, 400); // kecepatan pergantian (ms)
+    }
+
+
+    document.getElementById("indicator" + id).style.background = "lime";
+    // document.getElementById("status" + id).innerHTML = "Pompa Menyala";
+
+    // PROSES 3
+    if (id === 3) {
+        document.getElementById("head").classList.add("rotate-head");
+         document.getElementById("st").innerHTML = "Proses 3";
+    }
+}
+
+ 
+
+function turnOff(id) {
+
+    if (id===1){
+
+        document.getElementById("btnOn2").disabled = false;
+        document.getElementById("btnOff2").disabled = false;
+        document.getElementById("btnOn3").disabled = false;
+        document.getElementById("btnOff3").disabled = false;
+    }
+    else if(id===2) {
+        document.getElementById("btnOn1").disabled = false;
+        document.getElementById("btnOff1").disabled = false;
+        document.getElementById("btnOn3").disabled = false;
+        document.getElementById("btnOff3").disabled = false;
+    }
+
+    else if(id===3) {
+        document.getElementById("btnOn1").disabled = false;
+        document.getElementById("btnOff1").disabled = false;
+        document.getElementById("btnOn2").disabled = false;
+        document.getElementById("btnOff2").disabled = false;
+    }
+
+
+
+
+    document.getElementById("indicator" + id).style.background = "red";
+    document.getElementById("indicator" + id).style.boxShadow = "0 0 10px red";
+  
+
+    // PROSES 1
+    if (id === 1) {
+        document.getElementById("mesin1").style.filter = "none";
+        document.getElementById("pump2").classList.remove("spin");
+        document.getElementById("pipe").src = "pipe.png";
+          document.getElementById("status" + id).innerHTML = "Pompa Mati";
+          document.getElementById("st").innerHTML = "OFF";
+    }
+
+    // PROSES 2
+    if (id === 2) {
+
+        // Hentikan animasi
+        clearInterval(rotatorLoop);
+        rotatorLoop = null;
+
+        // Reset ke gambar awal
+        document.getElementById("rotator").src = "rotator1.png";
+          document.getElementById("st").innerHTML = "OFF";
+        //  document.getElementById("status" + id).innerHTML = "Pompa Mati";
+    }
+
+
+    // PROSES 3
+    if (id === 3) {
+        document.getElementById("head").classList.remove("rotate-head");
+         document.getElementById("st").innerHTML = "OFF";
+    }
+}
+
+
+
+</script>
+
+</body>
+</html>
